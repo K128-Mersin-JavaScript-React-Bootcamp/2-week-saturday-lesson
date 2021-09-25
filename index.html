@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <script>
+        const userLanguages = {
+            HTML: 1000
+        }
+        const ENDPOINT_URL = "http://localhost:3000/";
+
+
+        const handleLanguages = (languages) => {
+            for(lang in languages) {
+                if(userLanguages.hasOwnProperty(lang)) {
+                    userLanguages[lang] += languages[lang]
+                } else {
+                    userLanguages[lang] = languages[lang]
+                }
+            }
+            console.log(userLanguages);
+            
+        }
+
+
+        const getRespositories = (callback) => {
+            fetch(ENDPOINT_URL + 'repositories')
+            .then(res => res.json())
+            .then(json => callback(json));
+        }
+        const getLanguages = (repositories, callback) => {
+            repositories.forEach(repo => {
+                fetch(`https://api.github.com/repos/octocat/${repo.name}/languages`)
+                .then(res => res.json())
+                .then(json => handleLanguages(json));
+            });
+        }
+        getRespositories(getLanguages);
+    </script>
+</body>
+</html>
